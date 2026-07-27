@@ -25,6 +25,7 @@ import {
   Toggle,
 } from "../components/ui";
 import { ProfileQRSDialog } from "./ProfileQRSDialog";
+import { VPN4TVOnboardingDialog } from "./VPN4TVOnboardingDialog";
 import styles from "./ProfileViews.module.css";
 import { cx } from "../lib/cx";
 import { createCheckScheduler, type CheckScheduler } from "../lib/checkScheduler";
@@ -135,6 +136,7 @@ export function ProfileCard(props: { host: DesktopHost }) {
   const { selectedId, profiles } = useDesktopProfiles(host);
   const [picking, setPicking] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [onboarding, setOnboarding] = useState(false);
   const [editing, setEditing] = useState(false);
   const [showingQR, setShowingQR] = useState(false);
   const [showingQRS, setShowingQRS] = useState(false);
@@ -175,6 +177,9 @@ export function ProfileCard(props: { host: DesktopHost }) {
       wide
       actions={
         <OthersMenu icon="add">
+          <MenuItem icon="qr_code" onSelect={() => setOnboarding(true)}>
+            {t("Add subscription via Telegram")}
+          </MenuItem>
           <MenuItem icon="download" onSelect={importFromFile}>
             {t("Import from File")}
           </MenuItem>
@@ -185,7 +190,12 @@ export function ProfileCard(props: { host: DesktopHost }) {
       }
     >
       {profiles.length === 0 ? (
-        <p className={styles.profileEmpty}>{t("Empty profiles")}</p>
+        <div className={styles.profileEmpty}>
+          <p>{t("Empty profiles")}</p>
+          <Button variant="primary" onClick={() => setOnboarding(true)}>
+            {t("Add subscription via Telegram")}
+          </Button>
+        </div>
       ) : (
         <>
           <button type="button" className={styles.profileSelector} onClick={() => setPicking(true)}>
@@ -222,6 +232,9 @@ export function ProfileCard(props: { host: DesktopHost }) {
             </>
           )}
         </>
+      )}
+      {onboarding && (
+        <VPN4TVOnboardingDialog host={host} onClose={() => setOnboarding(false)} />
       )}
       {picking && <ProfilePickerDialog host={host} onClose={() => setPicking(false)} />}
       {creating && <CreateProfileDialog host={host} onClose={() => setCreating(false)} />}

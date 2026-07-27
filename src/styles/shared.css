@@ -1332,3 +1332,45 @@ button.settings-row:focus-visible {
       font-size: var(--text-lg);
     }
 }
+
+/* VPN4TV onboarding dialog */
+.vpn4tv-onboarding-body {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin: 16px 0;
+}
+
+.vpn4tv-onboarding-qr {
+  width: 180px;
+  flex: 0 0 auto;
+  background: #fff;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.vpn4tv-onboarding-qr .qr-code {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.vpn4tv-onboarding-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.vpn4tv-onboarding-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.vpn4tv-onboarding-user,
+.vpn4tv-onboarding-ok {
+  color: var(--accent-strong, #43d17a);
+  font-weight: 600;
+}

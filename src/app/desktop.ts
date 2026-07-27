@@ -162,7 +162,31 @@ export interface DesktopOpenConnectBrowserResult {
   headers: Array<{ name: string; values: string[] }>;
 }
 
+export interface VPN4TVOnboardingSession {
+  uuid: string;
+  code: string;
+  codeDisplay: string;
+  qrLink: string;
+  deepLink: string;
+  proxyUrl: string;
+}
+
+export type VPN4TVOnboardingEvent =
+  | { type: "user"; name: string }
+  | { type: "imported"; profileName: string }
+  | { type: "error"; message: string }
+  | { type: "offline" };
+
 export interface DesktopHost {
+  // VPN4TV: Telegram onboarding — the main process runs the poll and creates
+  // the profile; the dialog only renders progress.
+  vpn4tvOnboarding: {
+    start(): Promise<VPN4TVOnboardingSession>;
+    restart(): Promise<VPN4TVOnboardingSession>;
+    cancel(): Promise<void>;
+    openExternal(link: string): Promise<void>;
+    onEvent(listener: (event: VPN4TVOnboardingEvent) => void): () => void;
+  };
   platform: string;
   appVersion(): Promise<string>;
   transport: Transport;
