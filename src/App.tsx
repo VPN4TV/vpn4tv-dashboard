@@ -72,7 +72,7 @@ import {
   oomReportFileDisplayName,
   oomReportTitle,
 } from "./views/reportFormat";
-import { OverviewView } from "./views/OverviewView";
+import { VPN4TVHomeView } from "./views/VPN4TVHomeView";
 import {
   ImportProfileFileDialog,
   ImportRemoteProfileDialog,
@@ -807,7 +807,9 @@ function ShellContent(props: ShellProps & { onRetry: () => void }) {
 
   const mainContent = (
     <main className={styles.content}>
-      {route.page === "overview" && <OverviewView />}
+      {/* VPN4TV: the Android/Apple-style single screen replaces the card
+          dashboard as the first thing a user sees. */}
+      {route.page === "overview" && <VPN4TVHomeView />}
       {route.page === "groups" && <GroupsView />}
       {route.page === "connections" && <ConnectionsView />}
       {route.page === "logs" && <LogsView />}

@@ -353,6 +353,10 @@ export const TRANSLATIONS = {
   "Import from File": { "zh-Hans": "从文件导入", "zh-Hant": "從文件導入", "fa": "وارد کردن از فایل", "ru": "Импорт из файла" },
   "Create Manually": { "zh-Hans": "手动创建", "zh-Hant": "手動創建", "fa": "ایجاد دستی", "ru": "Создать вручную" },
   "Select Profile": { "zh-Hans": "选择配置", "zh-Hant": "選擇配置", "fa": "انتخاب پیکربندی", "ru": "Выбрать конфигурацию" },
+  "Connecting": { "zh-Hans": "连接中", "zh-Hant": "連線中", "fa": "در حال اتصال", "ru": "Подключение" },
+  "Disconnecting": { "zh-Hans": "断开中", "zh-Hant": "斷線中", "fa": "در حال قطع", "ru": "Отключение" },
+  "Disconnected": { "zh-Hans": "已断开", "zh-Hant": "已斷線", "fa": "قطع شد", "ru": "Отключено" },
+  "Updating...": { "zh-Hans": "更新中…", "zh-Hant": "更新中…", "fa": "در حال به‌روزرسانی…", "ru": "Обновление…" },
   // VPN4TV onboarding
   "Add subscription via Telegram": { "zh-Hans": "通过 Telegram 添加订阅", "zh-Hant": "透過 Telegram 新增訂閱", "fa": "افزودن اشتراک از طریق تلگرام", "ru": "Добавить подписку через Telegram" },
   "Add Subscription": { "zh-Hans": "添加订阅", "zh-Hant": "新增訂閱", "fa": "افزودن اشتراک", "ru": "Добавить подписку" },

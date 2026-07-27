@@ -1,0 +1,86 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 24px;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.profile {
+  display: flex;
+  justify-content: center;
+}
+
+.profileName {
+  font-weight: 600;
+  color: var(--text-secondary, #9a9aa6);
+}
+
+.center {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.status {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-secondary, #9a9aa6);
+}
+
+.statusOn {
+  color: var(--success, #43d17a);
+}
+
+.statusBusy {
+  color: var(--warning, #e6b422);
+}
+
+.connect {
+  min-width: 260px;
+  padding-block: 14px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.server {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.delay {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--text-secondary, #9a9aa6);
+}
+
+.traffic {
+  display: flex;
+  gap: 24px;
+  color: var(--text-secondary, #9a9aa6);
+  font-variant-numeric: tabular-nums;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
