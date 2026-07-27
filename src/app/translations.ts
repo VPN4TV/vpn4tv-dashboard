@@ -358,6 +358,9 @@ export const TRANSLATIONS = {
   "Disconnected": { "zh-Hans": "已断开", "zh-Hant": "已斷線", "fa": "قطع شد", "ru": "Отключено" },
   "Updating...": { "zh-Hans": "更新中…", "zh-Hant": "更新中…", "fa": "در حال به‌روزرسانی…", "ru": "Обновление…" },
   "Bypass DNS blocking (FakeDNS)": { "zh-Hans": "绕过 DNS 封锁（FakeDNS）", "zh-Hant": "繞過 DNS 封鎖（FakeDNS）", "fa": "دور زدن مسدودسازی DNS (FakeDNS)", "ru": "Обходить блокировку DNS (FakeDNS)" },
+  "Telegram channel @VPN4TV": { "zh-Hans": "Telegram 频道 @VPN4TV", "zh-Hant": "Telegram 頻道 @VPN4TV", "fa": "کانال تلگرام ‎@VPN4TV", "ru": "Telegram-канал @VPN4TV" },
+  "Support @vpn4tv_support": { "zh-Hans": "支持 @vpn4tv_support", "zh-Hant": "支援 @vpn4tv_support", "fa": "پشتیبانی ‎@vpn4tv_support", "ru": "Поддержка @vpn4tv_support" },
+  "Device ID": { "zh-Hans": "设备 ID", "zh-Hant": "裝置 ID", "fa": "شناسه دستگاه", "ru": "ID устройства" },
   "Connect automatically": { "zh-Hans": "自动连接", "zh-Hant": "自動連線", "fa": "اتصال خودکار", "ru": "Подключаться автоматически" },
   // VPN4TV onboarding
   "Add subscription via Telegram": { "zh-Hans": "通过 Telegram 添加订阅", "zh-Hant": "透過 Telegram 新增訂閱", "fa": "افزودن اشتراک از طریق تلگرام", "ru": "Добавить подписку через Telegram" },

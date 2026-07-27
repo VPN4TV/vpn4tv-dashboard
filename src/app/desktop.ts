@@ -290,6 +290,8 @@ export interface DesktopHost {
     list(): Promise<DesktopProfilesState>;
     /** VPN4TV: expiry / traffic captured from the subscription headers. */
     vpn4tvSubscriptionInfo(id: string): Promise<VPN4TVSubscriptionInfo | null>;
+    /** VPN4TV: stable per-install id, shown in About for support. */
+    vpn4tvDeviceId(): Promise<string>;
     onChanged(listener: () => void): () => void;
     create(init: DesktopProfileCreate): Promise<void>;
     updateMetadata(id: string, patch: DesktopProfilePatch): Promise<void>;

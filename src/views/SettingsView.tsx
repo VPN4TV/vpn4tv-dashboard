@@ -74,6 +74,18 @@ export function SettingsView() {
         <div>
           <div className="list-section-title">{t("About")}</div>
           <div className="nav-list">
+            {/* VPN4TV: support asks for this id, so it has to be readable. */}
+            <VPN4TVDeviceIdRow />
+            <NavRow
+              icon="open_in_new"
+              title={t("Telegram channel @VPN4TV")}
+              href="https://t.me/VPN4TV"
+            />
+            <NavRow
+              icon="info"
+              title={t("Support @vpn4tv_support")}
+              href="https://t.me/vpn4tv_support"
+            />
             <NavRow
               icon="description"
               title={t("Documentation")}
@@ -1233,5 +1245,33 @@ export function ServerDialog(props: {
         </div>
       </form>
     </Dialog>
+  );
+}
+
+/** The per-install id, click to copy — support workflows depend on it. */
+function VPN4TVDeviceIdRow() {
+  const { t } = useI18n();
+  const host = useDesktopHost();
+  const [deviceId, setDeviceId] = useState("");
+  useEffect(() => {
+    host?.profiles.vpn4tvDeviceId().then(setDeviceId).catch(() => setDeviceId(""));
+  }, [host]);
+  if (deviceId === "") {
+    return null;
+  }
+  return (
+    <div className="settings-row">
+      <span className="settings-row-label">{t("Device ID")}</span>
+      <button
+        type="button"
+        className="link-button"
+        title={t("Copy")}
+        onClick={() => {
+          void navigator.clipboard.writeText(deviceId);
+        }}
+      >
+        <code>{deviceId}</code>
+      </button>
+    </div>
   );
 }
