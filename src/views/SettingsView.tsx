@@ -37,17 +37,30 @@ import { openUpdateDialog, useUpdatesState } from "./UpdateViews";
 import styles from "./SettingsView.module.css";
 import { cx } from "../lib/cx";
 import { loadStoredJson, saveStoredJson } from "../lib/storage";
+import { VPN4TVManualImportDialog } from "./VPN4TVManualImportDialog";
 
 export function SettingsView() {
   const { t } = useI18n();
   const host = useDesktopHost();
   const localHost = useLocalDesktopHost();
+  const [manualImport, setManualImport] = useState(false);
 
   return (
     <div className="page">
       <PageHeader title={t("Settings")} />
+      {manualImport && host !== null && (
+        <VPN4TVManualImportDialog host={host} onClose={() => setManualImport(false)} />
+      )}
       <div className="settings-stack">
         <div className="nav-list">
+          {/* VPN4TV: parity with Android/Apple — paste links without Telegram. */}
+          {host !== null && (
+            <NavRow
+              icon="text_snippet"
+              title={t("Manual Import")}
+              onClick={() => setManualImport(true)}
+            />
+          )}
           {host === null && (
             <NavRow
               icon="tune"

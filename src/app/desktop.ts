@@ -292,6 +292,8 @@ export interface DesktopHost {
     vpn4tvSubscriptionInfo(id: string): Promise<VPN4TVSubscriptionInfo | null>;
     /** VPN4TV: stable per-install id, shown in About for support. */
     vpn4tvDeviceId(): Promise<string>;
+    /** Import pasted proxy URIs, a subscription link, or a plain config. */
+    vpn4tvImportManual(name: string, content: string): Promise<string>;
     onChanged(listener: () => void): () => void;
     create(init: DesktopProfileCreate): Promise<void>;
     updateMetadata(id: string, patch: DesktopProfilePatch): Promise<void>;

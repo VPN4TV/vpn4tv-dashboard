@@ -361,6 +361,8 @@ export const TRANSLATIONS = {
   "Telegram channel @VPN4TV": { "zh-Hans": "Telegram 频道 @VPN4TV", "zh-Hant": "Telegram 頻道 @VPN4TV", "fa": "کانال تلگرام ‎@VPN4TV", "ru": "Telegram-канал @VPN4TV" },
   "Support @vpn4tv_support": { "zh-Hans": "支持 @vpn4tv_support", "zh-Hant": "支援 @vpn4tv_support", "fa": "پشتیبانی ‎@vpn4tv_support", "ru": "Поддержка @vpn4tv_support" },
   "Device ID": { "zh-Hans": "设备 ID", "zh-Hant": "裝置 ID", "fa": "شناسه دستگاه", "ru": "ID устройства" },
+  "Manual Import": { "zh-Hans": "手动导入", "zh-Hant": "手動匯入", "fa": "درون‌ریزی دستی", "ru": "Ручной импорт" },
+  "Paste a subscription link, server links (vless://, ss://, …), or a sing-box config.": { "zh-Hans": "粘贴订阅链接、服务器链接（vless://、ss:// 等）或 sing-box 配置。", "zh-Hant": "貼上訂閱連結、伺服器連結（vless://、ss:// 等）或 sing-box 設定。", "fa": "پیوند اشتراک، پیوند سرورها (vless://، ss:// و …) یا پیکربندی sing-box را جای‌گذاری کنید.", "ru": "Вставьте ссылку на подписку, ссылки серверов (vless://, ss://, …) или конфигурацию sing-box." },
   "Connect automatically": { "zh-Hans": "自动连接", "zh-Hant": "自動連線", "fa": "اتصال خودکار", "ru": "Подключаться автоматически" },
   // VPN4TV onboarding
   "Add subscription via Telegram": { "zh-Hans": "通过 Telegram 添加订阅", "zh-Hant": "透過 Telegram 新增訂閱", "fa": "افزودن اشتراک از طریق تلگرام", "ru": "Добавить подписку через Telegram" },
