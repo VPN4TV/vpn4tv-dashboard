@@ -10,7 +10,11 @@ import { useEffect, useMemo, useState } from "react";
 import { formatBytes, urlTestDelayTone } from "../api/format";
 import { useStream } from "../api/stream";
 import { useApi } from "../app/context";
-import { useLocalDesktopHost, type DesktopProfile } from "../app/desktop";
+import {
+  useLocalDesktopHost,
+  type DesktopProfile,
+  type VPN4TVSubscriptionInfo,
+} from "../app/desktop";
 import { showError } from "../app/errorStore";
 import { useI18n } from "../app/i18n";
 import { Button, Select } from "../components/ui";
@@ -31,6 +35,7 @@ export function VPN4TVHomeView() {
   const [onboarding, setOnboarding] = useState(false);
   const [busy, setBusy] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [subscription, setSubscription] = useState<VPN4TVSubscriptionInfo | null>(null);
 
   const statusType = serviceStatus.data.status?.status;
   const started = statusType === ServiceStatus_Type.STARTED;
@@ -58,6 +63,25 @@ export function VPN4TVHomeView() {
     () => profiles.find((profile) => profile.id === selectedId) ?? profiles[0] ?? null,
     [profiles, selectedId],
   );
+
+  useEffect(() => {
+    if (host === null || selected === null) {
+      setSubscription(null);
+      return;
+    }
+    let cancelled = false;
+    host.profiles
+      .vpn4tvSubscriptionInfo(selected.id)
+      .then((info) => {
+        if (!cancelled) {
+          setSubscription(info);
+        }
+      })
+      .catch(() => setSubscription(null));
+    return () => {
+      cancelled = true;
+    };
+  }, [host, selected, updating]);
 
   // The user-facing group is the selector; fall back to whatever is selectable.
   const serverGroup = useMemo(() => {
@@ -126,6 +150,18 @@ export function VPN4TVHomeView() {
         </div>
       )}
 
+      {subscription !== null && (
+        <div className={styles.subscription}>
+          {subscriptionExpiry(subscription, t)}
+          {subscription.total !== undefined && subscription.total > 0 && (
+            <span>
+              {formatBytes((subscription.upload ?? 0) + (subscription.download ?? 0))} /{" "}
+              {formatBytes(subscription.total)}
+            </span>
+          )}
+        </div>
+      )}
+
       <div className={styles.center}>
         <p className={`${styles.status} ${started ? styles.statusOn : transitioning ? styles.statusBusy : ""}`}>
           {statusLabel}
@@ -182,4 +218,19 @@ export function VPN4TVHomeView() {
       )}
     </div>
   );
+}
+
+/** "Until 18 Mar 2027", or a red "Expired" once the date has passed. */
+function subscriptionExpiry(
+  info: VPN4TVSubscriptionInfo,
+  t: (key: "Expired") => string,
+) {
+  if (info.expireEpochSec === undefined || info.expireEpochSec <= 0) {
+    return null;
+  }
+  const date = new Date(info.expireEpochSec * 1000);
+  if (date.getTime() < Date.now()) {
+    return <span className={styles.expired}>{t("Expired")}</span>;
+  }
+  return <span>{date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</span>;
 }

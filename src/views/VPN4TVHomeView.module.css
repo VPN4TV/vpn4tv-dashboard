@@ -84,3 +84,16 @@
   justify-content: center;
   padding-top: 8px;
 }
+
+.subscription {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  color: var(--text-secondary, #9a9aa6);
+  font-size: 13px;
+}
+
+.expired {
+  color: var(--danger, #ff6b6b);
+  font-weight: 600;
+}

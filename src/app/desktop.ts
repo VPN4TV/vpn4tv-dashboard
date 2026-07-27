@@ -162,6 +162,13 @@ export interface DesktopOpenConnectBrowserResult {
   headers: Array<{ name: string; values: string[] }>;
 }
 
+export interface VPN4TVSubscriptionInfo {
+  upload?: number;
+  download?: number;
+  total?: number;
+  expireEpochSec?: number;
+}
+
 export interface VPN4TVOnboardingSession {
   uuid: string;
   code: string;
@@ -281,6 +288,8 @@ export interface DesktopHost {
   };
   profiles: {
     list(): Promise<DesktopProfilesState>;
+    /** VPN4TV: expiry / traffic captured from the subscription headers. */
+    vpn4tvSubscriptionInfo(id: string): Promise<VPN4TVSubscriptionInfo | null>;
     onChanged(listener: () => void): () => void;
     create(init: DesktopProfileCreate): Promise<void>;
     updateMetadata(id: string, patch: DesktopProfilePatch): Promise<void>;
