@@ -36,6 +36,7 @@ import { parseCustomTheme, type Scheme, type TerminalThemeEntry } from "../lib/t
 import { openUpdateDialog, useUpdatesState } from "./UpdateViews";
 import styles from "./SettingsView.module.css";
 import { cx } from "../lib/cx";
+import { loadStoredJson, saveStoredJson } from "../lib/storage";
 
 export function SettingsView() {
   const { t } = useI18n();
@@ -141,6 +142,9 @@ function AppSettingsContent({
   const [cacheSize, setCacheSize] = useState<number | null>(null);
   const [clearing, setClearing] = useState(false);
   const [savingOpenAtLogin, setSavingOpenAtLogin] = useState(false);
+  const [autoConnect, setAutoConnect] = useState(
+    () => loadStoredJson("vpn4tv-auto-connect") === true,
+  );
 
   useEffect(() => {
     let stale = false;
@@ -202,6 +206,22 @@ function AppSettingsContent({
               <div className="settings-row">
                 <span className="settings-row-label">{t("Theme")}</span>
                 <ThemeMenu accent={preferences.accent} onChange={preferences.onAccentChange} />
+              </div>
+              {/* VPN4TV: parity with the mobile clients — connect on launch. */}
+              <div className="settings-row">
+                <span className="settings-row-label">{t("Connect automatically")}</span>
+                <button
+                  type="button"
+                  className={autoConnect ? "switch on" : "switch"}
+                  role="switch"
+                  aria-checked={autoConnect}
+                  aria-label={t("Connect automatically")}
+                  onClick={() => {
+                    const value = !autoConnect;
+                    setAutoConnect(value);
+                    saveStoredJson("vpn4tv-auto-connect", value);
+                  }}
+                />
               </div>
               <div className="settings-row">
                 <span className="settings-row-label">{t("Start At Login")}</span>
