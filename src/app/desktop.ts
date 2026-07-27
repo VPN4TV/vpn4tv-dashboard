@@ -336,7 +336,6 @@ export interface DesktopHost {
   };
   // window.close() destroys sandboxed renderer webContents without emitting the host window's close event.
   application: {
-    shareFile(fileName: string, data: Uint8Array | string): Promise<void>;
     showMainWindow(): void;
     closeTrayMenu(): void;
     quit(): void;

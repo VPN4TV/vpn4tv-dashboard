@@ -22,24 +22,20 @@ function canUseWebShareFiles(): boolean {
   }
 }
 
-export function canShare(host: SharingHost | null): boolean {
-  return host?.platform === "win32" || typeof navigator.share === "function";
+export function canShare(_host: SharingHost | null): boolean {
+  return typeof navigator.share === "function";
 }
 
-export function canShareFiles(host: SharingHost | null): boolean {
-  return host?.platform === "win32" || canUseWebShareFiles();
+export function canShareFiles(_host: SharingHost | null): boolean {
+  return canUseWebShareFiles();
 }
 
 export async function shareFile(
-  host: SharingHost | null,
+  _host: SharingHost | null,
   name: string,
   data: Uint8Array | string,
   type: string,
 ): Promise<void> {
-  if (host?.platform === "win32") {
-    await host.application.shareFile(name, data);
-    return;
-  }
   const file = new File([filePart(data)], name, { type });
   if (typeof navigator.share === "function") {
     if (navigator.canShare?.({ files: [file] })) {
