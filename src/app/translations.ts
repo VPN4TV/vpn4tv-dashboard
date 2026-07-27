@@ -357,6 +357,7 @@ export const TRANSLATIONS = {
   "Disconnecting": { "zh-Hans": "断开中", "zh-Hant": "斷線中", "fa": "در حال قطع", "ru": "Отключение" },
   "Disconnected": { "zh-Hans": "已断开", "zh-Hant": "已斷線", "fa": "قطع شد", "ru": "Отключено" },
   "Updating...": { "zh-Hans": "更新中…", "zh-Hant": "更新中…", "fa": "در حال به‌روزرسانی…", "ru": "Обновление…" },
+  "Bypass DNS blocking (FakeDNS)": { "zh-Hans": "绕过 DNS 封锁（FakeDNS）", "zh-Hant": "繞過 DNS 封鎖（FakeDNS）", "fa": "دور زدن مسدودسازی DNS (FakeDNS)", "ru": "Обходить блокировку DNS (FakeDNS)" },
   "Connect automatically": { "zh-Hans": "自动连接", "zh-Hant": "自動連線", "fa": "اتصال خودکار", "ru": "Подключаться автоматически" },
   // VPN4TV onboarding
   "Add subscription via Telegram": { "zh-Hans": "通过 Telegram 添加订阅", "zh-Hant": "透過 Telegram 新增訂閱", "fa": "افزودن اشتراک از طریق تلگرام", "ru": "Добавить подписку через Telegram" },

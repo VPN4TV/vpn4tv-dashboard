@@ -142,6 +142,9 @@ function AppSettingsContent({
   const [cacheSize, setCacheSize] = useState<number | null>(null);
   const [clearing, setClearing] = useState(false);
   const [savingOpenAtLogin, setSavingOpenAtLogin] = useState(false);
+  const [fakeDns, setFakeDns] = useState(
+    () => loadStoredJson("vpn4tv-fake-dns") !== false,
+  );
   const [autoConnect, setAutoConnect] = useState(
     () => loadStoredJson("vpn4tv-auto-connect") === true,
   );
@@ -206,6 +209,23 @@ function AppSettingsContent({
               <div className="settings-row">
                 <span className="settings-row-label">{t("Theme")}</span>
                 <ThemeMenu accent={preferences.accent} onChange={preferences.onAccentChange} />
+              </div>
+              {/* VPN4TV: FakeDNS bypasses DNS blocking; off for networks where
+                  the fakeip path is broken. Changing it rebuilds the profiles. */}
+              <div className="settings-row">
+                <span className="settings-row-label">{t("Bypass DNS blocking (FakeDNS)")}</span>
+                <button
+                  type="button"
+                  className={fakeDns ? "switch on" : "switch"}
+                  role="switch"
+                  aria-checked={fakeDns}
+                  aria-label={t("Bypass DNS blocking (FakeDNS)")}
+                  onClick={() => {
+                    const value = !fakeDns;
+                    setFakeDns(value);
+                    saveStoredJson("vpn4tv-fake-dns", value);
+                  }}
+                />
               </div>
               {/* VPN4TV: parity with the mobile clients — connect on launch. */}
               <div className="settings-row">
