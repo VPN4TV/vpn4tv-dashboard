@@ -267,10 +267,44 @@ function isLocalReportsPage(page: string): boolean {
   return page.startsWith("tools/crash-reports") || page.startsWith("tools/oom-reports");
 }
 
+/**
+ * VPN4TV: the sidebar carries our name and OUR version. Upstream printed the
+ * core version here, which under our brand reads as the app's.
+ */
+function VPN4TVSidebarBrand(props: { fallbackVersion?: string }) {
+  const host = useDesktopHost();
+  const [appVersion, setAppVersion] = useState<string | null>(null);
+  useEffect(() => {
+    if (host === null) {
+      return;
+    }
+    let cancelled = false;
+    host
+      .appVersion()
+      .then((version) => {
+        if (!cancelled) {
+          setAppVersion(version);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [host]);
+  const version = appVersion ?? props.fallbackVersion;
+  return (
+    <div className={styles.sidebarBrand}>
+      VPN4TV
+      {version !== undefined && <span className={styles.sidebarBrandVersion}>{version}</span>}
+    </div>
+  );
+}
+
 function routeTitle(route: Route, t: Translate, language: string): string {
   switch (route.page) {
     case "overview":
-      return t("Dashboard");
+      // VPN4TV: the home screen is the product, so the window says so.
+      return "VPN4TV";
     case "groups":
       return t("Groups");
     case "connections":
@@ -337,7 +371,7 @@ function EndpointToolbarTitle<T>(props: {
   return props.count(status.data) > 1 && props.tag !== "" ? props.taggedTitle : props.title;
 }
 
-const DESKTOP_LOCAL_SERVER: Server = { id: "local", name: "sing-box", url: "", secret: "" };
+const DESKTOP_LOCAL_SERVER: Server = { id: "local", name: "VPN4TV", url: "", secret: "" };
 const DESKTOP_ACTIVE_KEY = "desktop-active-server";
 
 export function App(props: { desktop?: DesktopHost } = {}) {
@@ -877,7 +911,7 @@ function ShellContent(props: ShellProps & { onRetry: () => void }) {
             >
               <Icon name={menuOpen ? "close" : "menu"} size={18} />
             </IconButton>
-            <div className={styles.mobileTopbarBrand}>sing-box</div>
+            <div className={styles.mobileTopbarBrand}>VPN4TV</div>
           </header>
         )}
         {menuOpen && (
@@ -891,10 +925,7 @@ function ShellContent(props: ShellProps & { onRetry: () => void }) {
         {host !== null ? (
           <nav className={styles.sidebar}>
             <div className={styles.sidebarTitlebar} />
-            <div className={styles.sidebarBrand}>
-              sing-box
-              {serverInfo && <span className={styles.sidebarBrandVersion}>{serverInfo.version}</span>}
-            </div>
+            <VPN4TVSidebarBrand fallbackVersion={serverInfo?.version} />
             {started ? (
               <>
                 {navItem("overview", t("Overview"), "dashboard", route.page === "overview")}
@@ -908,10 +939,7 @@ function ShellContent(props: ShellProps & { onRetry: () => void }) {
           </nav>
         ) : (
           <nav className={cx(styles.sidebar, menuOpen && styles.open)}>
-            <div className={styles.sidebarBrand}>
-              sing-box
-              {serverInfo && <span className={styles.sidebarBrandVersion}>{serverInfo.version}</span>}
-            </div>
+            <VPN4TVSidebarBrand fallbackVersion={serverInfo?.version} />
             {navItem("overview", t("Overview"), "dashboard", route.page === "overview")}
             {hasGroups && navItem("groups", t("Groups"), "folder", route.page === "groups")}
             {started && navItem("connections", t("Connections"), "swap_vert", route.page === "connections")}
