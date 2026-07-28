@@ -125,7 +125,7 @@ function UpdateCheckPromptDialog(props: { host: DesktopHost }) {
     <Dialog onClose={decline}>
       <h3>{t("Check Update")}</h3>
       <p className="dialog-message">
-        {t("Would you like to enable automatic update checking from GitHub?")}
+        {t("Would you like to enable automatic update checking?")}
       </p>
       <div className="row-actions dialog-actions">
         <Button disabled={busy} onClick={decline}>

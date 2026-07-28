@@ -97,3 +97,16 @@
   color: var(--danger, #ff6b6b);
   font-weight: 600;
 }
+
+/* VPN4TV: which node "auto" actually chose, and the empty-install hint. */
+.effectiveServer {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.empty {
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0.7;
+}

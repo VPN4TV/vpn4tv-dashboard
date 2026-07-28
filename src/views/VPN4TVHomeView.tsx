@@ -5,7 +5,7 @@
 // The upstream card dashboard is still available under the other tabs; this is
 // what a normal user sees first.
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { formatBytes, urlTestDelayTone } from "../api/format";
 import { useStream } from "../api/stream";
@@ -20,6 +20,7 @@ import { useI18n } from "../app/i18n";
 import { Button, Select } from "../components/ui";
 import { ServiceStatus_Type } from "../gen/daemon/started_service_pb";
 import { VPN4TVOnboardingDialog } from "./VPN4TVOnboardingDialog";
+import { VPN4TVProfilesDialog } from "./VPN4TVProfilesDialog";
 import styles from "./VPN4TVHomeView.module.css";
 
 export function VPN4TVHomeView() {
@@ -33,9 +34,13 @@ export function VPN4TVHomeView() {
   const [profiles, setProfiles] = useState<DesktopProfile[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [onboarding, setOnboarding] = useState(false);
+  const [manageProfiles, setManageProfiles] = useState(false);
   const [busy, setBusy] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [subscription, setSubscription] = useState<VPN4TVSubscriptionInfo | null>(null);
+  const [testing, setTesting] = useState(false);
+  const [profilesLoaded, setProfilesLoaded] = useState(false);
+  const onboardingPrompted = useRef(false);
 
   const statusType = serviceStatus.data.status?.status;
   const started = statusType === ServiceStatus_Type.STARTED;
@@ -52,12 +57,20 @@ export function VPN4TVHomeView() {
         .then((state) => {
           setProfiles(state.profiles);
           setSelectedId(state.selectedId);
+          setProfilesLoaded(true);
         })
         .catch(showError);
     };
     reload();
     return host.profiles.onChanged(reload);
   }, [host]);
+
+  useEffect(() => {
+    if (profilesLoaded && profiles.length === 0 && !onboardingPrompted.current) {
+      onboardingPrompted.current = true;
+      setOnboarding(true);
+    }
+  }, [profilesLoaded, profiles.length]);
 
   const selected = useMemo(
     () => profiles.find((profile) => profile.id === selectedId) ?? profiles[0] ?? null,
@@ -93,12 +106,62 @@ export function VPN4TVHomeView() {
 
   const selectedServer = serverGroup?.items.find((item) => item.tag === serverGroup.selected) ?? null;
 
+  // "auto" is a group of its own: show which node it actually landed on,
+  // otherwise the user cannot tell which country they are exiting through.
+  const autoGroup = useMemo(
+    () => groups.data.groups.find((group) => group.type === "urltest") ?? null,
+    [groups.data.groups],
+  );
+  const effectiveServer =
+    selectedServer !== null && autoGroup !== null && selectedServer.tag === autoGroup.tag
+      ? autoGroup.selected
+      : null;
+
+  const testAll = () => {
+    if (serverGroup === null) {
+      return;
+    }
+    setTesting(true);
+    api
+      .urlTest(serverGroup.tag)
+      .catch(showError)
+      .finally(() => setTesting(false));
+  };
+
+  // Right after connecting almost nothing has a measured delay yet, so the
+  // picker is useless until the core gets around to it. Nudge it, as Android does.
+  useEffect(() => {
+    if (!started || serverGroup === null) {
+      return;
+    }
+    const timer = setTimeout(() => {
+      api.urlTest(serverGroup.tag).catch(() => {});
+    }, 1500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [started]);
+
   const toggle = () => {
     if (host === null) {
       return;
     }
     setBusy(true);
-    (started ? host.service.stop() : host.service.start())
+    const start = async () => {
+      // A renewed subscription still has the expired servers on disk; refresh
+      // first or the user connects to nothing and blames the app.
+      if (selected?.type === "remote" && expired(subscription)) {
+        setUpdating(true);
+        try {
+          await host.profiles.updateRemote(selected.id);
+        } catch {
+          // Offline or the panel is down — try the servers we already have.
+        } finally {
+          setUpdating(false);
+        }
+      }
+      await host.service.start();
+    };
+    (started ? host.service.stop() : start())
       .catch(showError)
       .finally(() => setBusy(false));
   };
@@ -147,6 +210,9 @@ export function VPN4TVHomeView() {
           ) : (
             <span className={styles.profileName}>{selected.name}</span>
           )}
+          {/* VPN4TV: renaming and deleting live on the card dashboard we
+              replaced, so the home screen has to offer them. */}
+          <Button onClick={() => setManageProfiles(true)}>{t("Manage")}</Button>
         </div>
       )}
 
@@ -176,25 +242,35 @@ export function VPN4TVHomeView() {
         </Button>
 
         {started && serverGroup !== null && serverGroup.items.length > 0 && (
-          <div className={styles.server}>
-            <span className="secondary-text">{t("Server")}</span>
-            <Select<string>
-              options={serverGroup.items.map((item) => ({
-                value: item.tag,
-                label:
-                  item.urlTestDelay > 0 ? `${item.tag} · ${item.urlTestDelay}ms` : item.tag,
-              }))}
-              value={serverGroup.selected}
-              onChange={(tag) => {
-                api.selectOutbound(serverGroup.tag, tag).catch(showError);
-              }}
-            />
-            {selectedServer !== null && selectedServer.urlTestDelay > 0 && (
-              <span className={styles.delay} data-tone={urlTestDelayTone(selectedServer.urlTestDelay)}>
-                {selectedServer.urlTestDelay}ms
-              </span>
+          <>
+            <div className={styles.server}>
+              <span className="secondary-text">{t("Server")}</span>
+              <Select<string>
+                options={serverGroup.items.map((item) => ({
+                  value: item.tag,
+                  label:
+                    item.urlTestDelay > 0 ? `${item.tag} · ${item.urlTestDelay}ms` : item.tag,
+                }))}
+                value={serverGroup.selected}
+                onChange={(tag) => {
+                  api.selectOutbound(serverGroup.tag, tag).catch(showError);
+                }}
+              />
+              {selectedServer !== null && selectedServer.urlTestDelay > 0 && (
+                <span className={styles.delay} data-tone={urlTestDelayTone(selectedServer.urlTestDelay)}>
+                  {selectedServer.urlTestDelay}ms
+                </span>
+              )}
+              <Button disabled={testing} onClick={testAll}>
+                {testing ? t("Testing...") : t("Test All")}
+              </Button>
+            </div>
+            {effectiveServer !== null && effectiveServer !== "" && (
+              <p className={styles.effectiveServer}>
+                {t("Currently: {server}").replace("{server}", effectiveServer)}
+              </p>
             )}
-          </div>
+          </>
         )}
 
         {started && status.data.current !== null && (
@@ -207,6 +283,10 @@ export function VPN4TVHomeView() {
         )}
       </div>
 
+      {profilesLoaded && profiles.length === 0 && (
+        <p className={styles.empty}>{t("Add a subscription to get started.")}</p>
+      )}
+
       <footer className={styles.footer}>
         <Button variant="primary" onClick={() => setOnboarding(true)}>
           {t("Add subscription via Telegram")}
@@ -216,7 +296,20 @@ export function VPN4TVHomeView() {
       {onboarding && host !== null && (
         <VPN4TVOnboardingDialog host={host} onClose={() => setOnboarding(false)} />
       )}
+
+      {manageProfiles && host !== null && (
+        <VPN4TVProfilesDialog host={host} onClose={() => setManageProfiles(false)} />
+      )}
     </div>
+  );
+}
+
+function expired(info: VPN4TVSubscriptionInfo | null): boolean {
+  return (
+    info !== null &&
+    info.expireEpochSec !== undefined &&
+    info.expireEpochSec > 0 &&
+    info.expireEpochSec * 1000 < Date.now()
   );
 }
 

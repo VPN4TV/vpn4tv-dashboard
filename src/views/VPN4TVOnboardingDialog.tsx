@@ -8,6 +8,7 @@ import { useI18n } from "../app/i18n";
 import type { DesktopHost, VPN4TVOnboardingSession } from "../app/desktop";
 import { showError } from "../app/errorStore";
 import { Button, Dialog, QRCode } from "../components/ui";
+import { VPN4TVManualImportDialog } from "./VPN4TVManualImportDialog";
 
 export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () => void }) {
   const { t } = useI18n();
@@ -16,6 +17,8 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
   const [imported, setImported] = useState<string | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [offline, setOffline] = useState(false);
+  const [expired, setExpired] = useState(false);
+  const [manualImport, setManualImport] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -41,6 +44,9 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
         case "offline":
           setOffline(true);
           break;
+        case "expired":
+          setExpired(true);
+          break;
       }
     });
     return () => {
@@ -59,6 +65,13 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
     return () => clearTimeout(timer);
   }, [imported, props.onClose]);
 
+  const restart = () => {
+    setExpired(false);
+    setOffline(false);
+    setSession(null);
+    props.host.vpn4tvOnboarding.restart().then(setSession).catch(showError);
+  };
+
   const open = (link: string) => {
     props.host.vpn4tvOnboarding.openExternal(link).catch(showError);
   };
@@ -73,7 +86,14 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
           <p className="secondary-text">
             {t("Scan the QR in Telegram, or send the code to @VPN4TV_Bot.")}
           </p>
-          {session !== null && (
+          {expired ? (
+            <div className="row-actions">
+              <Button variant="primary" onClick={restart}>
+                {t("Refresh the code")}
+              </Button>
+            </div>
+          ) : (
+            session !== null && (
             <div className="vpn4tv-onboarding-body">
               <div className="vpn4tv-onboarding-qr">
                 <QRCode value={session.qrLink} />
@@ -89,12 +109,19 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
                 </Button>
               </div>
             </div>
+            )
           )}
+          {expired && <p className="secondary-text">{t("The code has expired.")}</p>}
           {userName !== null && <p className="vpn4tv-onboarding-user">{userName}</p>}
           {offline && (
-            <p className="secondary-text">
-              {t("Can't reach the server? Add the subscription link manually instead.")}
-            </p>
+            <>
+              <p className="secondary-text">
+                {t("Can't reach the server? Add the subscription link manually instead.")}
+              </p>
+              <div className="row-actions">
+                <Button onClick={() => setManualImport(true)}>{t("Manual Import")}</Button>
+              </div>
+            </>
           )}
           {failure !== null && <p className="error-text">{failure}</p>}
         </>
@@ -102,6 +129,15 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
       <div className="row-actions dialog-actions">
         <Button onClick={props.onClose}>{t("Close")}</Button>
       </div>
+      {manualImport && (
+        <VPN4TVManualImportDialog
+          host={props.host}
+          onClose={() => {
+            setManualImport(false);
+            props.onClose();
+          }}
+        />
+      )}
     </Dialog>
   );
 }

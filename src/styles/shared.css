@@ -1374,3 +1374,49 @@ button.settings-row:focus-visible {
   color: var(--accent-strong, #43d17a);
   font-weight: 600;
 }
+
+/* VPN4TV: the subscription manager dialog. */
+.vpn4tv-profile-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 24rem;
+}
+
+.vpn4tv-profile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.vpn4tv-profile-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* VPN4TV: the open-source attribution list. */
+.vpn4tv-license-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 22rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.vpn4tv-license-list li {
+  display: flex;
+  flex-direction: column;
+}
+
+.vpn4tv-license-name {
+  font-weight: 600;
+}

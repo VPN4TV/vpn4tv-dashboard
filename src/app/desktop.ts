@@ -182,7 +182,8 @@ export type VPN4TVOnboardingEvent =
   | { type: "user"; name: string }
   | { type: "imported"; profileName: string }
   | { type: "error"; message: string }
-  | { type: "offline" };
+  | { type: "offline" }
+  | { type: "expired" };
 
 export interface DesktopHost {
   // VPN4TV: Telegram onboarding — the main process runs the poll and creates

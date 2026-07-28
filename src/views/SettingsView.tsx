@@ -38,12 +38,14 @@ import styles from "./SettingsView.module.css";
 import { cx } from "../lib/cx";
 import { loadStoredJson, saveStoredJson } from "../lib/storage";
 import { VPN4TVManualImportDialog } from "./VPN4TVManualImportDialog";
+import { VPN4TVLicensesDialog } from "./VPN4TVLicensesDialog";
 
 export function SettingsView() {
   const { t } = useI18n();
   const host = useDesktopHost();
   const localHost = useLocalDesktopHost();
   const [manualImport, setManualImport] = useState(false);
+  const [licenses, setLicenses] = useState(false);
 
   return (
     <div className="page">
@@ -51,6 +53,7 @@ export function SettingsView() {
       {manualImport && host !== null && (
         <VPN4TVManualImportDialog host={host} onClose={() => setManualImport(false)} />
       )}
+      {licenses && <VPN4TVLicensesDialog onClose={() => setLicenses(false)} />}
       <div className="settings-stack">
         <div className="nav-list">
           {/* VPN4TV: parity with Android/Apple — paste links without Telegram. */}
@@ -98,6 +101,12 @@ export function SettingsView() {
               icon="info"
               title={t("Support @vpn4tv_support")}
               href="https://t.me/vpn4tv_support"
+            />
+            {/* VPN4TV: the core is GPLv3 — naming what we build on is required. */}
+            <NavRow
+              icon="favorite"
+              title={t("Open Source Licenses")}
+              onClick={() => setLicenses(true)}
             />
             <NavRow
               icon="description"
@@ -172,6 +181,12 @@ function AppSettingsContent({
   );
   const [autoConnect, setAutoConnect] = useState(
     () => loadStoredJson("vpn4tv-auto-connect") === true,
+  );
+  const [lanBypass, setLanBypass] = useState(
+    () => loadStoredJson("vpn4tv-lan-bypass") !== false,
+  );
+  const [sendCrashReports, setSendCrashReports] = useState(
+    () => loadStoredJson("vpn4tv-send-crash-reports") !== false,
   );
 
   useEffect(() => {
@@ -249,6 +264,39 @@ function AppSettingsContent({
                     const value = !fakeDns;
                     setFakeDns(value);
                     saveStoredJson("vpn4tv-fake-dns", value);
+                  }}
+                />
+              </div>
+              {/* VPN4TV: without this the router page, network drives and
+                  printers stop answering while connected. */}
+              <div className="settings-row">
+                <span className="settings-row-label">{t("Keep local network direct")}</span>
+                <button
+                  type="button"
+                  className={lanBypass ? "switch on" : "switch"}
+                  role="switch"
+                  aria-checked={lanBypass}
+                  aria-label={t("Keep local network direct")}
+                  onClick={() => {
+                    const value = !lanBypass;
+                    setLanBypass(value);
+                    saveStoredJson("vpn4tv-lan-bypass", value);
+                  }}
+                />
+              </div>
+              {/* VPN4TV: crash dumps reach support only if we send them. */}
+              <div className="settings-row">
+                <span className="settings-row-label">{t("Send crash reports")}</span>
+                <button
+                  type="button"
+                  className={sendCrashReports ? "switch on" : "switch"}
+                  role="switch"
+                  aria-checked={sendCrashReports}
+                  aria-label={t("Send crash reports")}
+                  onClick={() => {
+                    const value = !sendCrashReports;
+                    setSendCrashReports(value);
+                    saveStoredJson("vpn4tv-send-crash-reports", value);
                   }}
                 />
               </div>
@@ -369,10 +417,6 @@ function UpdateSettingsSection({ host }: { host: DesktopHost }) {
   const { t } = useI18n();
   const updates = useUpdatesState(host);
   const [noUpdatesVisible, setNoUpdatesVisible] = useState(false);
-  const [githubTokenVisible, setGitHubTokenVisible] = useState(false);
-  const [githubToken, setGitHubToken] = useState("");
-  const [githubTokenLoading, setGitHubTokenLoading] = useState(false);
-  const [githubTokenSaving, setGitHubTokenSaving] = useState(false);
 
   if (updates === null || !updates.supported) {
     return null;
@@ -390,31 +434,6 @@ function UpdateSettingsSection({ host }: { host: DesktopHost }) {
       })
       .catch(showError);
   };
-
-  const editGitHubToken = () => {
-    setGitHubToken("");
-    setGitHubTokenVisible(true);
-    setGitHubTokenLoading(true);
-    host.updates
-      .getGitHubToken()
-      .then(setGitHubToken)
-      .catch((error) => {
-        setGitHubTokenVisible(false);
-        showError(error);
-      })
-      .finally(() => setGitHubTokenLoading(false));
-  };
-
-  const saveGitHubToken = () => {
-    setGitHubTokenSaving(true);
-    host.updates
-      .setGitHubToken(githubToken)
-      .then(() => setGitHubTokenVisible(false))
-      .catch(showError)
-      .finally(() => setGitHubTokenSaving(false));
-  };
-
-  const githubTokenBusy = githubTokenLoading || githubTokenSaving;
 
   return (
     <div>
@@ -436,10 +455,6 @@ function UpdateSettingsSection({ host }: { host: DesktopHost }) {
             />
           </div>
         )}
-        <button type="button" className="settings-row" onClick={editGitHubToken}>
-          <span className="settings-row-label">{t("GitHub Token")}</span>
-          <Icon name="keyboard_arrow_right" size={14} />
-        </button>
         <div className="settings-row">
           <span className="settings-row-label">{t("Automatic Update Check")}</span>
           <button
@@ -480,41 +495,6 @@ function UpdateSettingsSection({ host }: { host: DesktopHost }) {
           <div className="row-actions dialog-actions">
             <Button variant="primary" onClick={() => setNoUpdatesVisible(false)}>
               {t("Ok")}
-            </Button>
-          </div>
-        </Dialog>
-      )}
-      {githubTokenVisible && (
-        <Dialog
-          onClose={() => {
-            if (!githubTokenBusy) {
-              setGitHubTokenVisible(false);
-            }
-          }}
-        >
-          <h3>{t("GitHub Token")}</h3>
-          {githubTokenLoading ? (
-            <Spinner />
-          ) : (
-            <Field label={t("GitHub Token")}>
-              <SecretInput
-                value={githubToken}
-                placeholder={t("Get higher GitHub API rate limits")}
-                disabled={githubTokenSaving}
-                onChange={setGitHubToken}
-              />
-            </Field>
-          )}
-          <div className="row-actions dialog-actions">
-            <Button disabled={githubTokenBusy} onClick={() => setGitHubTokenVisible(false)}>
-              {t("Cancel")}
-            </Button>
-            <Button
-              variant="primary"
-              disabled={githubTokenBusy}
-              onClick={saveGitHubToken}
-            >
-              {t("Save")}
             </Button>
           </div>
         </Dialog>
