@@ -39,6 +39,7 @@ import { cx } from "../lib/cx";
 import { loadStoredJson, saveStoredJson } from "../lib/storage";
 import { VPN4TVManualImportDialog } from "./VPN4TVManualImportDialog";
 import { VPN4TVLicensesDialog } from "./VPN4TVLicensesDialog";
+import { VPN4TVPerAppDialog, loadPerAppProxy } from "./VPN4TVPerAppDialog";
 
 export function SettingsView() {
   const { t } = useI18n();
@@ -188,6 +189,8 @@ function AppSettingsContent({
   const [sendCrashReports, setSendCrashReports] = useState(
     () => loadStoredJson("vpn4tv-send-crash-reports") !== false,
   );
+  const [perApp, setPerApp] = useState(false);
+  const [perAppValue, setPerAppValue] = useState(loadPerAppProxy);
 
   useEffect(() => {
     let stale = false;
@@ -284,6 +287,23 @@ function AppSettingsContent({
                   }}
                 />
               </div>
+              {/* VPN4TV: split tunnelling, by executable name. */}
+              <button
+                type="button"
+                className="settings-row"
+                onClick={() => setPerApp(true)}
+              >
+                <span className="settings-row-label">{t("Per-app Proxy")}</span>
+                <span className="secondary-text">
+                  {perAppValue.mode === "off" || perAppValue.apps.length === 0
+                    ? t("Off")
+                    : `${
+                        perAppValue.mode === "include"
+                          ? t("Only selected")
+                          : t("All except selected")
+                      } · ${perAppValue.apps.length}`}
+                </span>
+              </button>
               {/* VPN4TV: crash dumps reach support only if we send them. */}
               <div className="settings-row">
                 <span className="settings-row-label">{t("Send crash reports")}</span>
@@ -409,6 +429,15 @@ function AppSettingsContent({
           </>
         )}
       </div>
+      {perApp && (
+        <VPN4TVPerAppDialog
+          host={host}
+          onClose={() => {
+            setPerApp(false);
+            setPerAppValue(loadPerAppProxy());
+          }}
+        />
+      )}
     </div>
   );
 }
