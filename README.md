@@ -1,16 +1,39 @@
-# sing-box dashboard
+# VPN4TV Dashboard
 
-Web dashboard for sing-box.
+The user interface of [VPN4TV Desktop](https://github.com/VPN4TV/vpn4tv-desktop),
+consumed by it as a git submodule. Fork of
+[sing-box-dashboard](https://github.com/SagerNet/sing-box-dashboard).
 
-## Public instance
+Not a separate product: it is built into the Electron client, and the download
+links live in the client's repository.
 
-http://sing-box-dashboard.sagernet.org
+## What is ours
 
-For Chrome, you can use HTTPS, but not for other browsers.
+- `src/views/VPN4TVHomeView.tsx` — the single-screen home that replaces the card
+  dashboard: subscription with expiry, one connect button, server picker with
+  latency, session traffic
+- `src/views/VPN4TVOnboardingDialog.tsx` — adding a subscription through the
+  Telegram bot (QR, pairing code, MTProto proxy fallback, code expiry)
+- `src/views/VPN4TVManualImportDialog.tsx` — pasting links or a configuration
+- `src/views/VPN4TVProfilesDialog.tsx` — renaming, deleting and switching
+  subscriptions
+- `src/views/VPN4TVPerAppDialog.tsx` — split tunnelling by application
+- `src/views/VPN4TVLicensesDialog.tsx` — open-source attribution
+- Settings gained LAN bypass, FakeDNS, connect-on-launch, crash reporting and a
+  copyable device id; the service setup screen offers the installation by itself
 
-Shortcut: dash.sing-box.app
+## Development
 
-## LICENSE
+```bash
+pnpm install
+pnpm generate      # protobuf, icons, terminal themes
+pnpm dev
+```
+
+Standalone it runs against a sing-box instance with the Clash API enabled; in
+the desktop client it talks to the daemon over gRPC instead.
+
+## License
 
 ```
 Copyright (C) 2022 by nekohasekai <contact-sagernet@sekai.icu>
