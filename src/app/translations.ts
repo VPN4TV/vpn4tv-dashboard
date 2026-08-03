@@ -386,6 +386,8 @@ export const TRANSLATIONS = {
   "Nothing is running to pick from.": { "zh-Hans": "没有可选择的运行中应用。", "zh-Hant": "沒有可選擇的執行中應用。", "fa": "برنامهٔ در حال اجرایی برای انتخاب نیست.", "ru": "Нет запущенных приложений для выбора." },
   "Add application...": { "zh-Hans": "添加应用…", "zh-Hant": "新增應用…", "fa": "افزودن برنامه…", "ru": "Добавить приложение…" },
   "Off": { "zh-Hans": "关闭", "zh-Hant": "關閉", "fa": "خاموش", "ru": "Выключено" },
+  "Install the system service?": { "zh-Hans": "安装系统服务？", "zh-Hant": "安裝系統服務？", "fa": "سرویس سیستمی نصب شود؟", "ru": "Установить системную службу?" },
+  "VPN4TV needs a system service to create the tunnel. It is installed once and asks for your administrator password.": { "zh-Hans": "VPN4TV 需要一个系统服务来建立隧道。只需安装一次，会请求你的管理员密码。", "zh-Hant": "VPN4TV 需要一個系統服務來建立通道。只需安裝一次，會要求你的管理員密碼。", "fa": "VPN4TV برای ساخت تونل به یک سرویس سیستمی نیاز دارد. یک‌بار نصب می‌شود و رمز مدیر را می‌خواهد.", "ru": "Для создания туннеля VPN4TV нужна системная служба. Она устанавливается один раз и запросит пароль администратора." },
   "Manual Import": { "zh-Hans": "手动导入", "zh-Hant": "手動匯入", "fa": "درون‌ریزی دستی", "ru": "Ручной импорт" },
   "Paste a subscription link, server links (vless://, ss://, …), or a sing-box config.": { "zh-Hans": "粘贴订阅链接、服务器链接（vless://、ss:// 等）或 sing-box 配置。", "zh-Hant": "貼上訂閱連結、伺服器連結（vless://、ss:// 等）或 sing-box 設定。", "fa": "پیوند اشتراک، پیوند سرورها (vless://، ss:// و …) یا پیکربندی sing-box را جای‌گذاری کنید.", "ru": "Вставьте ссылку на подписку, ссылки серверов (vless://, ss://, …) или конфигурацию sing-box." },
   "Connect automatically": { "zh-Hans": "自动连接", "zh-Hant": "自動連線", "fa": "اتصال خودکار", "ru": "Подключаться автоматически" },

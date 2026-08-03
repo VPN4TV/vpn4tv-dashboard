@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { Server, ServersState } from "../api/config";
 import { serverDisplayName } from "../api/config";
@@ -22,6 +22,14 @@ export function DesktopSetupView(props: {
   const [repairing, setRepairing] = useState(false);
   const [repairError, setRepairError] = useState<string | null>(null);
   const [confirmingTakeOver, setConfirmingTakeOver] = useState(false);
+  // VPN4TV: install the service as soon as we know it is missing, instead of
+  // leaving the user to find the button. On Windows the UAC prompt is the
+  // expected way to install a service, so it goes straight there; on macOS an
+  // administrator password out of nowhere needs a word of explanation first.
+  const [confirmingInstall, setConfirmingInstall] = useState(false);
+  const [installOffered, setInstallOffered] = useState(false);
+  const installMissing = state.phase === "not-installed" && !packageServiceMissing;
+
 
   const runRepair = (repair: () => Promise<unknown>, onSuccess?: () => void) => {
     setRepairing(true);
@@ -33,6 +41,19 @@ export function DesktopSetupView(props: {
       })
       .finally(() => setRepairing(false));
   };
+
+  useEffect(() => {
+    if (!installMissing || installOffered) {
+      return;
+    }
+    setInstallOffered(true);
+    if (host.platform === "win32") {
+      runRepair(host.setup.repairInstall);
+      return;
+    }
+    setConfirmingInstall(true);
+    // The flag above is what makes this run once.
+  }, [installMissing, installOffered, host]);
 
   let title: string;
   switch (state.phase) {
@@ -161,6 +182,32 @@ export function DesktopSetupView(props: {
           )}
         </div>
       </div>
+      {confirmingInstall && (
+        <Dialog onClose={() => (repairing ? undefined : setConfirmingInstall(false))}>
+          <h3>{t("Install the system service?")}</h3>
+          <p className="dialog-message">
+            {t(
+              "VPN4TV needs a system service to create the tunnel. It is installed once and asks for your administrator password.",
+            )}
+          </p>
+          <div className="row-actions dialog-actions">
+            <Button disabled={repairing} onClick={() => setConfirmingInstall(false)}>
+              {t("Cancel")}
+            </Button>
+            <Button
+              variant="primary"
+              disabled={repairing}
+              onClick={() => {
+                setConfirmingInstall(false);
+                runRepair(host.setup.repairInstall);
+              }}
+            >
+              {repairing && <Spinner />}
+              {t("Install")}
+            </Button>
+          </div>
+        </Dialog>
+      )}
       {confirmingTakeOver && (
         <Dialog onClose={() => (repairing ? undefined : setConfirmingTakeOver(false))}>
           <h3>{t("Take Over VPN4TV?")}</h3>
