@@ -28,7 +28,12 @@ export function DesktopSetupView(props: {
   // administrator password out of nowhere needs a word of explanation first.
   const [confirmingInstall, setConfirmingInstall] = useState(false);
   const [installOffered, setInstallOffered] = useState(false);
-  const installMissing = state.phase === "not-installed" && !packageServiceMissing;
+  // An outdated service is as blocking as a missing one, and it also carries an
+  // outdated service definition — the descriptor limit shipped in 1.0.0-beta.7
+  // only lands when the service is reinstalled. Leaving it behind a button meant
+  // a user could sit on the old, broken definition indefinitely.
+  const installMissing =
+    (state.phase === "not-installed" || state.phase === "version-mismatch") && !packageServiceMissing;
 
 
   const runRepair = (repair: () => Promise<unknown>, onSuccess?: () => void) => {
@@ -184,11 +189,17 @@ export function DesktopSetupView(props: {
       </div>
       {confirmingInstall && (
         <Dialog onClose={() => (repairing ? undefined : setConfirmingInstall(false))}>
-          <h3>{t("Install the system service?")}</h3>
+          <h3>
+            {state.phase === "version-mismatch"
+              ? t("Update the system service?")
+              : t("Install the system service?")}
+          </h3>
           <p className="dialog-message">
-            {t(
-              "VPN4TV needs a system service to create the tunnel. It is installed once and asks for your administrator password.",
-            )}
+            {state.phase === "version-mismatch"
+              ? t("This version of VPN4TV needs a newer system service. Updating asks for your administrator password.")
+              : t(
+                  "VPN4TV needs a system service to create the tunnel. It is installed once and asks for your administrator password.",
+                )}
           </p>
           <div className="row-actions dialog-actions">
             <Button disabled={repairing} onClick={() => setConfirmingInstall(false)}>
@@ -203,7 +214,7 @@ export function DesktopSetupView(props: {
               }}
             >
               {repairing && <Spinner />}
-              {t("Install")}
+              {state.phase === "version-mismatch" ? t("Upgrade") : t("Install")}
             </Button>
           </div>
         </Dialog>

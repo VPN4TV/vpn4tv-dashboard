@@ -386,6 +386,8 @@ export const TRANSLATIONS = {
   "Nothing is running to pick from.": { "zh-Hans": "没有可选择的运行中应用。", "zh-Hant": "沒有可選擇的執行中應用。", "fa": "برنامهٔ در حال اجرایی برای انتخاب نیست.", "ru": "Нет запущенных приложений для выбора." },
   "Add application...": { "zh-Hans": "添加应用…", "zh-Hant": "新增應用…", "fa": "افزودن برنامه…", "ru": "Добавить приложение…" },
   "Off": { "zh-Hans": "关闭", "zh-Hant": "關閉", "fa": "خاموش", "ru": "Выключено" },
+  "Update the system service?": { "zh-Hans": "更新系统服务？", "zh-Hant": "更新系統服務？", "fa": "سرویس سیستمی به‌روزرسانی شود؟", "ru": "Обновить системную службу?" },
+  "This version of VPN4TV needs a newer system service. Updating asks for your administrator password.": { "zh-Hans": "此版本的 VPN4TV 需要更新的系统服务。更新时会请求管理员密码。", "zh-Hant": "此版本的 VPN4TV 需要更新的系統服務。更新時會要求管理員密碼。", "fa": "این نسخهٔ VPN4TV به سرویس سیستمی جدیدتری نیاز دارد. به‌روزرسانی رمز مدیر را می‌خواهد.", "ru": "Этой версии VPN4TV нужна более новая системная служба. При обновлении потребуется пароль администратора." },
   "Install the system service?": { "zh-Hans": "安装系统服务？", "zh-Hant": "安裝系統服務？", "fa": "سرویس سیستمی نصب شود؟", "ru": "Установить системную службу?" },
   "VPN4TV needs a system service to create the tunnel. It is installed once and asks for your administrator password.": { "zh-Hans": "VPN4TV 需要一个系统服务来建立隧道。只需安装一次，会请求你的管理员密码。", "zh-Hant": "VPN4TV 需要一個系統服務來建立通道。只需安裝一次，會要求你的管理員密碼。", "fa": "VPN4TV برای ساخت تونل به یک سرویس سیستمی نیاز دارد. یک‌بار نصب می‌شود و رمز مدیر را می‌خواهد.", "ru": "Для создания туннеля VPN4TV нужна системная служба. Она устанавливается один раз и запросит пароль администратора." },
   "Manual Import": { "zh-Hans": "手动导入", "zh-Hant": "手動匯入", "fa": "درون‌ریزی دستی", "ru": "Ручной импорт" },
