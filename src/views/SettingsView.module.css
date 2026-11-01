@@ -50,6 +50,11 @@ button:global(.settings-row).destructive-row {
   min-width: 0;
 }
 
+.row-note {
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+}
+
 .theme-picker-loading {
   display: flex;
   justify-content: center;

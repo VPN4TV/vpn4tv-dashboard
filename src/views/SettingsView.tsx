@@ -162,6 +162,23 @@ export function AppSettingsView(props: {
   return <AppSettingsContent host={host} {...props} />;
 }
 
+// VPN4TV: "Everything through VPN" — off by default ("Russia direct"), on by
+// default in Ukrainian time zones until the user picks a side. The same rule
+// as allThroughVpnEnabled in the desktop main process (src/main/vpn4tv).
+const UKRAINIAN_TIME_ZONES = new Set(["Europe/Kyiv", "Europe/Kiev", "Europe/Uzhgorod", "Europe/Zaporozhye"]);
+
+function loadAllThroughVpn(): boolean {
+  const stored = loadStoredJson("vpn4tv-all-through-vpn");
+  if (typeof stored === "boolean") {
+    return stored;
+  }
+  try {
+    return UKRAINIAN_TIME_ZONES.has(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  } catch {
+    return false;
+  }
+}
+
 function AppSettingsContent({
   host,
   ...preferences
@@ -186,6 +203,7 @@ function AppSettingsContent({
   const [lanBypass, setLanBypass] = useState(
     () => loadStoredJson("vpn4tv-lan-bypass") !== false,
   );
+  const [allThroughVpn, setAllThroughVpn] = useState(loadAllThroughVpn);
   const [sendCrashReports, setSendCrashReports] = useState(
     () => loadStoredJson("vpn4tv-send-crash-reports") !== false,
   );
@@ -267,6 +285,32 @@ function AppSettingsContent({
                     const value = !fakeDns;
                     setFakeDns(value);
                     saveStoredJson("vpn4tv-fake-dns", value);
+                  }}
+                />
+              </div>
+              {/* VPN4TV: off — Russian sites and services go direct ("Russia
+                  direct", added at every start); a change reloads the running
+                  service at once. Plain BitTorrent goes direct either way. */}
+              <div className="settings-row">
+                <div className={styles.rowText}>
+                  <span className="settings-row-label">{t("Everything through VPN")}</span>
+                  <span className="hint">
+                    {t("Off: Russian sites and services (.ru, .рф, Yandex, VK, banks, Gosuslugi) open directly, bypassing the VPN. On: everything goes through the VPN.")}
+                  </span>
+                  <span className={styles.rowNote}>
+                    {t("Torrents always go direct, outside the VPN, under the terms of use.")}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className={allThroughVpn ? "switch on" : "switch"}
+                  role="switch"
+                  aria-checked={allThroughVpn}
+                  aria-label={t("Everything through VPN")}
+                  onClick={() => {
+                    const value = !allThroughVpn;
+                    setAllThroughVpn(value);
+                    saveStoredJson("vpn4tv-all-through-vpn", value);
                   }}
                 />
               </div>
