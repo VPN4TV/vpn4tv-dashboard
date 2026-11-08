@@ -57,9 +57,9 @@ export function VPN4TVProfilesDialog(props: { host: DesktopHost; onClose: () => 
 
   return (
     <Dialog onClose={props.onClose}>
-      <h3>{t("Subscriptions")}</h3>
+      <h3>{t("Keys")}</h3>
       {profiles.length === 0 ? (
-        <p className="secondary-text">{t("Add a subscription to get started.")}</p>
+        <p className="secondary-text">{t("Add a key to get started.")}</p>
       ) : (
         <ul className="vpn4tv-profile-list">
           {profiles.map((profile) => (
@@ -120,7 +120,7 @@ export function VPN4TVProfilesDialog(props: { host: DesktopHost; onClose: () => 
       {confirmRemove !== null && (
         <Dialog onClose={() => setConfirmRemove(null)}>
           <h3>{t("Delete {name}?").replace("{name}", confirmRemove.name)}</h3>
-          <p className="secondary-text">{t("The subscription is removed from this device.")}</p>
+          <p className="secondary-text">{t("The key is removed from this device.")}</p>
           <div className="row-actions dialog-actions">
             <Button onClick={() => setConfirmRemove(null)}>{t("Cancel")}</Button>
             <Button variant="danger" onClick={() => remove(confirmRemove)}>

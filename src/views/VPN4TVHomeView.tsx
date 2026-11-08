@@ -284,12 +284,12 @@ export function VPN4TVHomeView() {
       </div>
 
       {profilesLoaded && profiles.length === 0 && (
-        <p className={styles.empty}>{t("Add a subscription to get started.")}</p>
+        <p className={styles.empty}>{t("Add a key to get started.")}</p>
       )}
 
       <footer className={styles.footer}>
         <Button variant="primary" onClick={() => setOnboarding(true)}>
-          {t("Add subscription via Telegram")}
+          {t("Add a key via Telegram")}
         </Button>
       </footer>
 

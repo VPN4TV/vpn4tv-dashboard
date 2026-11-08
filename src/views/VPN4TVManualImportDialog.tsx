@@ -31,7 +31,7 @@ export function VPN4TVManualImportDialog(props: { host: DesktopHost; onClose: ()
     <Dialog onClose={props.onClose}>
       <h3>{t("Manual Import")}</h3>
       <p className="secondary-text">
-        {t("Paste a subscription link, server links (vless://, ss://, …), or a sing-box config.")}
+        {t("Paste a key link, server links (vless://, ss://, …), or a sing-box config.")}
       </p>
       <Field label={t("Name")}>
         <input className="input" value={name} onChange={(event) => setName(event.target.value)} />

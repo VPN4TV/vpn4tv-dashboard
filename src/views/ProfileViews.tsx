@@ -178,7 +178,7 @@ export function ProfileCard(props: { host: DesktopHost }) {
       actions={
         <OthersMenu icon="add">
           <MenuItem icon="qr_code" onSelect={() => setOnboarding(true)}>
-            {t("Add subscription via Telegram")}
+            {t("Add a key via Telegram")}
           </MenuItem>
           <MenuItem icon="download" onSelect={importFromFile}>
             {t("Import from File")}
@@ -193,7 +193,7 @@ export function ProfileCard(props: { host: DesktopHost }) {
         <div className={styles.profileEmpty}>
           <p>{t("Empty profiles")}</p>
           <Button variant="primary" onClick={() => setOnboarding(true)}>
-            {t("Add subscription via Telegram")}
+            {t("Add a key via Telegram")}
           </Button>
         </div>
       ) : (

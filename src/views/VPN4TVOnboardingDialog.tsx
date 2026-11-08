@@ -78,7 +78,7 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
 
   return (
     <Dialog onClose={props.onClose}>
-      <h3>{t("Add Subscription")}</h3>
+      <h3>{t("Add Key")}</h3>
       {imported !== null ? (
         <p className="vpn4tv-onboarding-ok">{t("Added: {name}").replace("{name}", imported)}</p>
       ) : (
@@ -116,7 +116,7 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
           {offline && (
             <>
               <p className="secondary-text">
-                {t("Can't reach the server? Add the subscription link manually instead.")}
+                {t("Can't reach the server? Add the key link manually instead.")}
               </p>
               <div className="row-actions">
                 <Button onClick={() => setManualImport(true)}>{t("Manual Import")}</Button>
