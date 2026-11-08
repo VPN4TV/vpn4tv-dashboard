@@ -1362,6 +1362,19 @@ button.settings-row:focus-visible {
   min-width: 0;
 }
 
+/* Text for screen readers only. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .vpn4tv-onboarding-code {
   font-family: var(--font-mono, monospace);
   font-size: 22px;

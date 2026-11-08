@@ -100,7 +100,11 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
               </div>
               <div className="vpn4tv-onboarding-side">
                 <span className="secondary-text">{t("Your code")}</span>
-                <div className="vpn4tv-onboarding-code">{session.codeDisplay}</div>
+                {/* Read digit by digit: as one number a screen reader says "five billion…". */}
+                <div className="vpn4tv-onboarding-code" aria-hidden="true">{session.codeDisplay}</div>
+                <span className="visually-hidden">
+                  {session.codeDisplay.replace(/\D/g, "").split("").join(" ")}
+                </span>
                 <Button variant="primary" onClick={() => open(session.deepLink)}>
                   {t("Open Telegram")}
                 </Button>
@@ -112,7 +116,11 @@ export function VPN4TVOnboardingDialog(props: { host: DesktopHost; onClose: () =
             )
           )}
           {expired && <p className="secondary-text">{t("The code has expired.")}</p>}
-          {userName !== null && <p className="vpn4tv-onboarding-user">{userName}</p>}
+          {userName !== null && (
+            <p className="vpn4tv-onboarding-user" role="status" aria-live="polite">
+              {userName}
+            </p>
+          )}
           {offline && (
             <>
               <p className="secondary-text">

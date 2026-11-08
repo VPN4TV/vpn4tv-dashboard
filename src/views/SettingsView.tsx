@@ -272,15 +272,21 @@ function AppSettingsContent({
                 <ThemeMenu accent={preferences.accent} onChange={preferences.onAccentChange} />
               </div>
               {/* VPN4TV: FakeDNS bypasses DNS blocking; off for networks where
-                  the fakeip path is broken. Changing it rebuilds the profiles. */}
+                  the fakeip path is broken. Changing it rebuilds the profiles.
+                  Label and explanation as on Android. */}
               <div className="settings-row">
-                <span className="settings-row-label">{t("Bypass DNS blocking (FakeDNS)")}</span>
+                <div className={styles.rowText}>
+                  <span className="settings-row-label">{t("DNS blocking bypass")}</span>
+                  <span className="hint">
+                    {t("FakeDNS: the VPN server looks up site addresses. Turn it off if connecting hangs.")}
+                  </span>
+                </div>
                 <button
                   type="button"
                   className={fakeDns ? "switch on" : "switch"}
                   role="switch"
                   aria-checked={fakeDns}
-                  aria-label={t("Bypass DNS blocking (FakeDNS)")}
+                  aria-label={t("DNS blocking bypass")}
                   onClick={() => {
                     const value = !fakeDns;
                     setFakeDns(value);
@@ -317,13 +323,16 @@ function AppSettingsContent({
               {/* VPN4TV: without this the router page, network drives and
                   printers stop answering while connected. */}
               <div className="settings-row">
-                <span className="settings-row-label">{t("Keep local network direct")}</span>
+                <div className={styles.rowText}>
+                  <span className="settings-row-label">{t("Bypass LAN")}</span>
+                  <span className="hint">{t("Printers, network drives and the router skip the VPN")}</span>
+                </div>
                 <button
                   type="button"
                   className={lanBypass ? "switch on" : "switch"}
                   role="switch"
                   aria-checked={lanBypass}
-                  aria-label={t("Keep local network direct")}
+                  aria-label={t("Bypass LAN")}
                   onClick={() => {
                     const value = !lanBypass;
                     setLanBypass(value);

@@ -229,7 +229,12 @@ export function VPN4TVHomeView() {
       )}
 
       <div className={styles.center}>
-        <p className={`${styles.status} ${started ? styles.statusOn : transitioning ? styles.statusBusy : ""}`}>
+        {/* Announced to screen readers as it changes, as TalkBack does on Android. */}
+        <p
+          className={`${styles.status} ${started ? styles.statusOn : transitioning ? styles.statusBusy : ""}`}
+          role="status"
+          aria-live="polite"
+        >
           {statusLabel}
         </p>
         <Button
