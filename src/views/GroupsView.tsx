@@ -63,7 +63,7 @@ function GroupCard(props: { group: Group }) {
       return;
     }
     setPendingSelection(item.tag);
-    api.selectOutbound(group.tag, item.tag).catch((error: unknown) => {
+    api.switchServer(group.tag, item.tag).catch((error: unknown) => {
       setPendingSelection(null);
       showError(error);
     });

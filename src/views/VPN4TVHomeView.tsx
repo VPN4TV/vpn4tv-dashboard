@@ -258,7 +258,9 @@ export function VPN4TVHomeView() {
                 }))}
                 value={serverGroup.selected}
                 onChange={(tag) => {
-                  api.selectOutbound(serverGroup.tag, tag).catch(showError);
+                  if (tag !== serverGroup.selected) {
+                    api.switchServer(serverGroup.tag, tag).catch(showError);
+                  }
                 }}
               />
               {selectedServer !== null && selectedServer.urlTestDelay > 0 && (

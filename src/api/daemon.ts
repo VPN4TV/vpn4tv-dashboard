@@ -425,6 +425,21 @@ export class DaemonApi {
     await this.client.selectOutbound({ groupTag, outboundTag });
   }
 
+  /**
+   * The server picked by hand: select it, then close the connections already open. The core leaves an open
+   * connection on the server it was opened through, so after a switch a browser went on through the old server
+   * (support chat 2026-11-17: Gemini kept seeing the old server's country). Apps reconnect through the new one.
+   * Callers pass real changes only. As on Android (ServersScreen.selectServer).
+   */
+  async switchServer(groupTag: string, outboundTag: string): Promise<void> {
+    await this.client.selectOutbound({ groupTag, outboundTag });
+    try {
+      await this.client.closeAllConnections({});
+    } catch (error) {
+      console.warn("open connections not closed after the switch", error);
+    }
+  }
+
   async setGroupExpand(groupTag: string, isExpand: boolean): Promise<void> {
     await this.client.setGroupExpand({ groupTag, isExpand });
   }

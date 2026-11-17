@@ -517,7 +517,7 @@ function GroupNodes(props: { group: Group; api: DaemonApi; onClose: () => void }
     if (tag === group.selected) {
       return;
     }
-    props.api.selectOutbound(group.tag, tag).catch(showError);
+    props.api.switchServer(group.tag, tag).catch(showError);
   };
 
   return (
